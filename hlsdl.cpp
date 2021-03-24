@@ -26,6 +26,7 @@ Hlsdl::Hlsdl(QWidget *parent) :
     hls_args.maxwidth = -1;
     hls_args.maxheight = -1;
     hls_args.audiolang = NULL;
+    mCustomHeaderIdx = 0;
     ui->tabWidget->hide();
     ui->defaultBtn->hide();
     resize(minimumWidth(),height());
@@ -33,6 +34,23 @@ Hlsdl::Hlsdl(QWidget *parent) :
 
 Hlsdl::~Hlsdl()
 {
+    if(hls_args.user_agent)
+    {
+        free(hls_args.user_agent);
+    }
+    if(hls_args.proxy_uri)
+    {
+        free(hls_args.proxy_uri);
+    }
+    for(int i=0; i<mCustomHeaderIdx; i++)
+    {
+        char * curHeader = hls_args.custom_headers[i];
+        if(curHeader)
+        {
+            free(curHeader);
+        }
+    }
+
     delete ui;
 }
 
@@ -49,7 +67,37 @@ void Hlsdl::initArg()
         hls_args.force_ignoredrm = true;
     }
     hls_args.url = ui->m3u8linkLe->text().toLatin1().data();
-    qDebug()<<"url: "<<hls_args.url;
+    hls_args.live_start_offset_sec    = ui->offsetSecLe->text().toInt();
+    hls_args.live_duration_sec        = ui->durationSecLe->text().toInt();
+    hls_args.refresh_delay_sec        = ui->refreshSecLe->text().toInt();
+    hls_args.segment_download_retries = ui->retriesLe->text().toInt();
+    hls_args.open_max_retries = HLSDL_OPEN_MAX_RETRIES;
+    hls_args.maxwidth = -1;
+    hls_args.maxheight = -1;
+    hls_args.audiolang = NULL;
+    QString str;
+    str = ui->userAgentLe->text();
+    if(!str.isEmpty())
+    {
+        hls_args.user_agent = (char*)malloc(str.length() + 1);
+        strcpy(hls_args.user_agent, str.toLatin1().data());
+    }
+    str = ui->proxyUriLe->text();
+    if(!str.isEmpty())
+    {
+        hls_args.proxy_uri = (char*)malloc(str.length() + 1);
+        strcpy(hls_args.proxy_uri, str.toLatin1().data());
+    }
+    str = ui->httpHeaderLe->text();
+    if(!str.isEmpty())
+    {
+        if (mCustomHeaderIdx < HLSDL_MAX_NUM_OF_CUSTOM_HEADERS) {
+            hls_args.custom_headers[mCustomHeaderIdx] = (char*)malloc(str.length() + 1);
+            strcpy(hls_args.custom_headers[mCustomHeaderIdx], str.toLatin1().data());
+            mCustomHeaderIdx += 1;
+        }
+    }
+
     return;
 }
 
@@ -386,5 +434,22 @@ void Hlsdl::on_moreBtn_clicked()
         ui->defaultBtn->hide();
         ui->moreBtn->setText(">>");
         resize(minimumWidth(),height());
+    }
+}
+
+void Hlsdl::on_defaultBtn_clicked()
+{
+    if(ui->streamTab->isVisible())
+    {
+        ui->offsetSecLe->setText("120");
+        ui->durationSecLe->setText("-1");
+        ui->refreshSecLe->setText("-1");
+        ui->retriesLe->setText("30");
+    }
+    else if(ui->webTab->isVisible())
+    {
+        ui->userAgentLe->setText("");
+        ui->httpHeaderLe->setText("");
+        ui->proxyUriLe->setText("");
     }
 }

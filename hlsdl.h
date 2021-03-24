@@ -23,6 +23,8 @@ private slots:
 
     void on_moreBtn_clicked();
 
+    void on_defaultBtn_clicked();
+
 private:
     Ui::Hlsdl *ui;
 
@@ -39,6 +41,9 @@ private:
     int dowloading();
 
     FILE *getOutputFile();
+
+private:
+    int mCustomHeaderIdx;
 };
 
 #endif // HLSDL_H

@@ -41,9 +41,9 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
-   <widget class="QWidget" name="tab">
+   <widget class="QWidget" name="streamTab">
     <attribute name="title">
      <string>Stream</string>
     </attribute>
@@ -53,7 +53,7 @@
        <x>0</x>
        <y>10</y>
        <width>281</width>
-       <height>141</height>
+       <height>180</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -65,7 +65,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_4"/>
+       <widget class="QLineEdit" name="offsetSecLe">
+        <property name="text">
+         <string>120</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_5">
@@ -75,7 +79,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_6"/>
+       <widget class="QLineEdit" name="durationSecLe">
+        <property name="text">
+         <string>-1</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_6">
@@ -85,12 +93,30 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_5"/>
+       <widget class="QLineEdit" name="refreshSecLe">
+        <property name="text">
+         <string>-1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Set Segment download retries:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="retriesLe">
+        <property name="text">
+         <string>30</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab_2">
+   <widget class="QWidget" name="webTab">
     <attribute name="title">
      <string>Web</string>
     </attribute>
@@ -112,7 +138,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit"/>
+       <widget class="QLineEdit" name="userAgentLe"/>
       </item>
       <item>
        <widget class="QLabel" name="label_7">
@@ -122,7 +148,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_2"/>
+       <widget class="QLineEdit" name="httpHeaderLe"/>
       </item>
       <item>
        <widget class="QLabel" name="label_8">
@@ -132,7 +158,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_3"/>
+       <widget class="QLineEdit" name="proxyUriLe"/>
       </item>
      </layout>
     </widget>
