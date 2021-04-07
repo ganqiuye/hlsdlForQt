@@ -1288,7 +1288,7 @@ static void *hls_playlist_update_thread(void *arg)
 int download_live_hls(write_ctx_t *out_ctx, hls_media_playlist_t *me)
 {
     MSG_API("{\"d_t\":\"live\"}\n");
-
+    printf("{\"d_t\":\"live\"}\n");
     hls_playlist_updater_params updater_params;
 
     /* declaration synchronization prymitives */
@@ -1378,6 +1378,7 @@ int download_live_hls(write_ctx_t *out_ctx, hls_media_playlist_t *me)
         }
 
         MSG_PRINT("Downloading part %d\n", ms->sequence_number);
+        printf("Downloading part %d\n", ms->sequence_number);
         int retries = 0;
         do {
             struct ByteBuffer seg;
@@ -1403,14 +1404,14 @@ int download_live_hls(write_ctx_t *out_ctx, hls_media_playlist_t *me)
                     if (session) {
                         set_timeout_session(session, 2L, 5L);
                         set_fresh_connect_http_session(session, 1);
-                        MSG_WARNING("Live retry segment %d download, due to previous error. http_code[%d].\n", ms->sequence_number, (int)http_code);
+                        printf("Live retry segment %d download, due to previous error. http_code[%d].\n", ms->sequence_number, (int)http_code);
                         retries += 1;
                         continue;
                     }
                 }
                 else
                 {
-                    MSG_WARNING("Live mode skipping segment %d. http_code[%d].\n", ms->sequence_number, (int)http_code);
+                    printf("Live mode skipping segment %d. http_code[%d].\n", ms->sequence_number, (int)http_code);
                     break;
                 }
             }
@@ -1434,7 +1435,7 @@ int download_live_hls(write_ctx_t *out_ctx, hls_media_playlist_t *me)
 
             time_t curRepTime = time(NULL);
             if ((curRepTime - repTime) >= 1) {
-                MSG_API("{\"t_d\":%u,\"d_d\":%u,\"d_s\":%"PRId64"}\n", (uint32_t)(me->total_duration_ms / 1000), (uint32_t)(downloaded_duration_ms / 1000), download_size);
+                printf("{\"t_d\":%u,\"d_d\":%u,\"d_s\":%"PRId64"}\n", (uint32_t)(me->total_duration_ms / 1000), (uint32_t)(downloaded_duration_ms / 1000), download_size);
                 repTime = curRepTime;
             }
 
@@ -1453,7 +1454,7 @@ int download_live_hls(write_ctx_t *out_ctx, hls_media_playlist_t *me)
     pthread_mutex_destroy(&cookie_file_mtx);
     hls_args.cookie_file_mutex = NULL;
 
-    MSG_API("{\"t_d\":%u,\"d_d\":%u,\"d_s\":%"PRId64"}\n", (uint32_t)(me->total_duration_ms / 1000), (uint32_t)(downloaded_duration_ms / 1000), download_size);
+    printf("{\"t_d\":%u,\"d_d\":%u,\"d_s\":%"PRId64"}\n", (uint32_t)(me->total_duration_ms / 1000), (uint32_t)(downloaded_duration_ms / 1000), download_size);
     if (session)
     {
         clean_http_session(session);
@@ -1467,7 +1468,7 @@ static int vod_download_segment(void **psession, hls_media_playlist_t *me, struc
     int retries = 0;
     int ret = 0;
     while (true) {
-        MSG_PRINT("Downloading part %d\n", ms->sequence_number);
+        printf("Downloading part %d\n", ms->sequence_number);
 
         memset(seg, 0x00, sizeof(*seg));
         size_t size = 0;
@@ -1485,13 +1486,13 @@ static int vod_download_segment(void **psession, hls_media_playlist_t *me, struc
                 set_timeout_session(*psession, 2L, 30L);
                 if (*psession) {
                     set_fresh_connect_http_session(*psession, 1);
-                    MSG_WARNING("VOD retry segment %d download, due to previous error. http_code[%d].\n", ms->sequence_number, (int)http_code);
+                    printf("VOD retry segment %d download, due to previous error. http_code[%d].\n", ms->sequence_number, (int)http_code);
                     retries += 1;
                     continue;
                 }
             }
             ret = 1;
-            MSG_API("{\"error_code\":%d, \"error_msg\":\"http\"}\n", (int)http_code);
+            printf("{\"error_code\":%d, \"error_msg\":\"http\"}\n", (int)http_code);
             break;
         }
         break;
@@ -1553,9 +1554,9 @@ uint8_t * find_first_ts_packet(ByteBuffer_t *buf) {
 
 int download_hls(write_ctx_t *out_ctx, hls_media_playlist_t *me, hls_media_playlist_t *me_audio)
 {
-    MSG_VERBOSE("Downloading segments.\n");
-    MSG_API("{\"d_t\":\"vod\"}\n"); // d_t - download type
-    MSG_API("{\"t_d\":%u,\"d_d\":0, \"d_s\":0}\n", (uint32_t)(me->total_duration_ms / 1000)); // t_d - total duration, d_d  - download duration, d_s - download size
+    printf("gqy=====Downloading segments.\n");
+    printf("{\"d_t\":\"vod\"}\n"); // d_t - download type
+    printf("{\"t_d\":%u,\"d_d\":0, \"d_s\":0}\n", (uint32_t)(me->total_duration_ms / 1000)); // t_d - total duration, d_d  - download duration, d_s - download size
 
     int ret = 0;
     void *session = init_hls_session();
@@ -1619,14 +1620,14 @@ int download_hls(write_ctx_t *out_ctx, hls_media_playlist_t *me, hls_media_playl
 
         time_t curRepTime = time(NULL);
         if ((curRepTime - repTime) >= 1) {
-            MSG_API("{\"t_d\":%u,\"d_d\":%u,\"d_s\":%"PRId64"}\n", (uint32_t)(me->total_duration_ms / 1000), (uint32_t)(downloaded_duration_ms / 1000), download_size);
+            printf("{\"t_d\":%u,\"d_d\":%u,\"d_s\":%"PRId64"}\n", (uint32_t)(me->total_duration_ms / 1000), (uint32_t)(downloaded_duration_ms / 1000), download_size);
             repTime = curRepTime;
         }
 
         ms = ms->next;
     }
 
-    MSG_API("{\"t_d\":%u,\"d_d\":%u,\"d_s\":%"PRId64"}\n", (uint32_t)(me->total_duration_ms / 1000), (uint32_t)(downloaded_duration_ms / 1000), download_size);
+    printf("{\"t_d\":%u,\"d_d\":%u,\"d_s\":%"PRId64"}\n", (uint32_t)(me->total_duration_ms / 1000), (uint32_t)(downloaded_duration_ms / 1000), download_size);
 
     if (session) {
         clean_http_session(session);
@@ -1641,15 +1642,15 @@ int print_enc_keys(hls_media_playlist_t *me)
     while(ms) {
         if (me->encryption == true) {
             fill_key_value(&(ms->enc_aes));
-            MSG_PRINT("[AES-128]KEY: 0x");
+            printf("[AES-128]KEY: 0x");
             for(size_t count = 0; count < KEYLEN; count++) {
-                MSG_PRINT("%02x", ms->enc_aes.key_value[count]);
+                printf("%02x", ms->enc_aes.key_value[count]);
             }
-            MSG_PRINT(" IV: 0x");
+            printf(" IV: 0x");
             for(size_t count = 0; count < KEYLEN; count++) {
-                MSG_PRINT("%02x", ms->enc_aes.iv_value[count]);
+                printf("%02x", ms->enc_aes.iv_value[count]);
             }
-            MSG_PRINT("\n");
+            printf("\n");
         }
         ms = ms->next;
     }
@@ -1766,7 +1767,7 @@ int fill_key_value(struct enc_aes128 *es)
             }
 
             if (http_code != 200 || size == 0) {
-                MSG_ERROR("Getting key-file [%s] failed http_code[%d].\n", es->key_url, http_code);
+                printf("Getting key-file [%s] failed http_code[%d].\n", es->key_url, http_code);
                 return 1;
             }
 

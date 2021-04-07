@@ -31,7 +31,9 @@ SOURCES += main.cpp\
     core/mpegts.c \
     core/msg.c \
     core/aes.c \
-    core/aes_openssl.c
+    core/aes_openssl.c \
+    downloadthread.cpp \
+    qualitydlg.cpp
 
 HEADERS  += hlsdl.h \
     core/curl.h \
@@ -39,7 +41,9 @@ HEADERS  += hlsdl.h \
     core/misc.h \
     core/mpegts.h \
     core/msg.h \
-    core/aes.h
+    core/aes.h \
+    downloadthread.h \
+    qualitydlg.h
 
 INCLUDEPATH += ./libcurl \
                ./libopenssl/include

@@ -2,7 +2,7 @@
 #define HLSDL_H
 
 #include <QWidget>
-#include "core/hls.h"
+#include "downloadthread.h"
 
 namespace Ui {
 class Hlsdl;
@@ -25,6 +25,11 @@ private slots:
 
     void on_defaultBtn_clicked();
 
+    void showLog(QString msg, int level=DownloadThread::INFO_MSG);
+
+    void chooseQuality(void* list);
+
+
 private:
     Ui::Hlsdl *ui;
 
@@ -32,18 +37,9 @@ private:
 
     bool checkArg();
 
-    bool getDataWithRetry(char *url, char **hlsfile_source, char **finall_url, int tries);
-
-    int selectMediaPlaylist(hls_media_playlist_t *media_playlist, hls_media_playlist_t *audio_media_playlist, char *url, char *hlsfile_source, int playlist_type);
-
-    int saveMedia(hls_media_playlist_t media_playlist, hls_media_playlist_t audio_media_playlist);
-
-    int dowloading();
-
-    FILE *getOutputFile();
-
 private:
     int mCustomHeaderIdx;
+    DownloadThread *pDownloadThread;
 };
 
 #endif // HLSDL_H
